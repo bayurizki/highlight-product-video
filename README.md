@@ -38,3 +38,9 @@ Replace `1` with the ID of the video you want to display.
 ## Preview
 
 ![Demo](https://raw.githubusercontent.com/bayurizki/highlight-product-video/main/preview.gif)
+
+## ☕ Buy Me a Coffee
+😃😃😃😃  
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-PayPal-blue?style=flat&logo=paypal)](https://www.paypal.com/paypalme/byrzk)
+

@@ -1,0 +1,99 @@
+/* General styles for the video container */
+.highlight-product-video-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    background-color: #000; /* Optional: background color for better visibility */
+    overflow: hidden;
+    margin-bottom: 35px;
+}
+
+.video-mobile{
+    display: none;
+}
+
+/* Video styling */
+.highlight-product-video {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Crop video to fit container */
+    object-position: center; /* Center the video content */
+}
+
+/* Product Info Section */
+.custom-product-info {
+    position: absolute; /* Position relative to the video container */
+    bottom: 65px; /* Space from the bottom of the container */
+    left: 35px; /* Space from the left of the container */
+    background-color: rgba(254, 254, 254, 0.49); /* Semi-transparent background for better visibility */
+    padding: 10px 15px;
+    border-radius: 8px; /* Rounded corners */
+    color: #fff; /* White text color */
+    z-index: 10; /* Ensure it appears above the video */
+    max-width: 420px; /* Optional: limit the width of the product info */
+}
+
+.custom-product-price,
+.custom-product-name{
+    margin: unset;
+}
+
+.custom-product-price span,
+.custom-product-name{
+    color: #111;
+}
+
+/* Product Image */
+.custom-product-image {
+    width: 180px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-top: 35px;
+    float: right;
+    border-radius: 15px;
+}
+
+/* Product Name */
+.custom-product-name {
+    font-size: 16px;
+}
+
+/* Product Price */
+.custom-product-price {
+    font-size: 14px;
+}
+
+.custom-add-to-cart{
+    background-color: #999;
+}
+/* Add to Cart Button */
+.custom-add-to-cart {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #0073aa; /* WooCommerce blue */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.custom-add-to-cart:hover {
+    background-color: #005b85; /* Darker blue on hover */
+}
+
+/* Adjustments for Mobile Devices */
+@media (max-width: 520px) {
+    .video-desktop{
+        display: none;
+    }
+    .video-mobile{
+        display: block;
+    }
+
+    .custom-product-info{
+        bottom: 15px;
+        left: 15px;
+    }
+}

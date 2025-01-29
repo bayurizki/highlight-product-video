@@ -37,7 +37,4 @@ Replace `1` with the ID of the video you want to display.
 
 ## Preview
 
-<video width="600" controls>
-  <source src="https://raw.githubusercontent.com/bayurizki/highlight-product-video/main/video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Demo](https://raw.githubusercontent.com/bayurizki/highlight-product-video/main/preview.gif)

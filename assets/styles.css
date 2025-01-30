@@ -24,13 +24,24 @@
 .custom-product-info {
     position: absolute; /* Position relative to the video container */
     bottom: 65px; /* Space from the bottom of the container */
-    left: 35px; /* Space from the left of the container */
     background-color: rgba(254, 254, 254, 0.49); /* Semi-transparent background for better visibility */
     padding: 10px 15px;
     border-radius: 8px; /* Rounded corners */
     color: #fff; /* White text color */
     z-index: 10; /* Ensure it appears above the video */
     max-width: 420px; /* Optional: limit the width of the product info */
+}
+
+.custom-product-info.left{
+    left: 35px; 
+}
+
+.custom-product-info.right{
+    left: unset;
+    right: 35px; 
+}
+.custom-product-info.right{
+    right: 35px; /* Space from the right of the container */
 }
 
 .custom-product-price,

@@ -3,13 +3,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function highlight_product_video_plugin_menu() {
+function highlight_product_video_menu() {
     add_menu_page(
-        'Custom Video Plugin',
-        'Custom Video',
+        'Highlight Product Video',
+        'Highlight Product Video',
         'manage_options',
-        'highlight-product-video-plugin',
-        'highlight_product_video_plugin_admin_page',
+        'custom-video-plugin',
+        'highlight_product_video_admin_page',
         'dashicons-video-alt3'
     );
 
@@ -19,19 +19,19 @@ function highlight_product_video_plugin_menu() {
         'Edit Video',
         'Edit Video',
         'manage_options',
-        'edit-highlight-product-video',
-        'highlight_product_video_plugin_edit_page'
+        'edit-custom-video',
+        'highlight_product_video_edit_page'
     );
 }
-add_action('admin_menu', 'highlight_product_video_plugin_menu');
+add_action('admin_menu', 'highlight_product_video_menu');
 
-function highlight_product_video_plugin_enqueue_admin_scripts($hook) {
+function highlight_product_video_enqueue_admin_scripts($hook) {
     // Identify the current screen's query variables
     $screen = get_current_screen();
     $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
     // Load scripts only on specific plugin pages
-    if ($current_page === 'highlight-product-video-plugin' || $current_page === 'edit-highlight-product-video') {
+    if ($current_page === 'custom-video-plugin' || $current_page === 'edit-custom-video') {
         wp_enqueue_media();
         wp_enqueue_script('jquery');
 
@@ -52,28 +52,31 @@ function highlight_product_video_plugin_enqueue_admin_scripts($hook) {
 
         // Load your custom admin.js script
         wp_enqueue_script(
-            'highlight-product-video-admin-script',
-            HIGHLIGHT_PRODUCT_VIDEO_PLUGIN_URL . 'assets/admin.js',
+            'custom-video-admin-script',
+            HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/admin.js',
             ['jquery', 'select2'],
-            filemtime(HIGHLIGHT_PRODUCT_VIDEO_PLUGIN_PATH . 'assets/admin.js'), 
+            filemtime(HIGHLIGHT_PRODUCT_VIDEO_DIR . 'assets/admin.js'), 
             true
         );
 
         // Load your custom admin.css style
         wp_enqueue_style(
-            'highlight-product-video-admin-style',
-            HIGHLIGHT_PRODUCT_VIDEO_PLUGIN_URL . 'assets/admin.css',
+            'custom-video-admin-style',
+            HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/admin.css',
             [],
-            filemtime(HIGHLIGHT_PRODUCT_VIDEO_PLUGIN_PATH . 'assets/admin.css') // Cache busting
+            filemtime(HIGHLIGHT_PRODUCT_VIDEO_DIR . 'assets/admin.css') // Cache busting
         );
     }
 }
-add_action('admin_enqueue_scripts', 'highlight_product_video_plugin_enqueue_admin_scripts');
+add_action('admin_enqueue_scripts', 'highlight_product_video_enqueue_admin_scripts');
 
-function highlight_product_video_plugin_admin_page() {
+function highlight_product_video_admin_page() {
     if (!current_user_can('manage_options')) {
         return;
     }
+
+    $default_video_url = 'https://example.com/default-video.mp4'; // Change this to your actual default video
+    $default_video_url_mbl = 'https://example.com/default-video-mobile.mp4'; // Default mobile video
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['video_submit'])) {
         $video_url = isset($_POST['video_url']) ? esc_url_raw($_POST['video_url']) : '';
@@ -82,7 +85,7 @@ function highlight_product_video_plugin_admin_page() {
 
         if ($video_url && $product_id) {
             $video_id = wp_insert_post([
-                'post_type'   => 'highlight_product_video',
+                'post_type'   => 'custom_video',
                 'post_title'  => 'Video for Product ' . $product_id,
                 'post_status' => 'publish',
                 'meta_input'  => [
@@ -104,7 +107,7 @@ function highlight_product_video_plugin_admin_page() {
 
     // Display list of videos with edit and delete buttons
     $args = [
-        'post_type'      => 'highlight_product_video',
+        'post_type'      => 'custom_video',
         'posts_per_page' => -1,
         'post_status'    => 'publish',
     ];
@@ -113,7 +116,7 @@ function highlight_product_video_plugin_admin_page() {
 
     ?>
     <div class="wrap">
-        <h1>Custom Video Plugin</h1>
+        <h1>Highlight Product Video</h1>
 
         <h2>Saved Videos</h2>
 
@@ -142,7 +145,7 @@ function highlight_product_video_plugin_admin_page() {
                                 <code>[show_video id="<?php echo get_the_ID(); ?>"]</code>
                             </td>
                             <td>
-                                <a href="<?php echo admin_url('admin.php?page=edit-highlight-product-video&id=' . get_the_ID()); ?>" class="button">Edit</a>
+                                <a href="<?php echo admin_url('admin.php?page=edit-custom-video&id=' . get_the_ID()); ?>" class="button">Edit</a>
                                 <!-- <a href="<?php echo get_edit_post_link(get_the_ID()); ?>" class="button">Edit</a> -->
                                 <!-- <a href="<?php echo get_delete_post_link(get_the_ID()); ?>" class="button" onclick="return confirm('Are you sure you want to delete this video?');">Delete</a> -->
                             </td>
@@ -157,7 +160,7 @@ function highlight_product_video_plugin_admin_page() {
     <?php
 }
 
-function highlight_product_video_plugin_edit_page() {
+function highlight_product_video_edit_page() {
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -165,7 +168,7 @@ function highlight_product_video_plugin_edit_page() {
     $video_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     $video_post = get_post($video_id);
 
-    if (!$video_post || $video_post->post_type !== 'highlight_product_video') {
+    if (!$video_post || $video_post->post_type !== 'custom_video') {
         echo '<div class="notice notice-error"><p>Invalid video ID.</p></div>';
         return;
     }
@@ -188,7 +191,7 @@ function highlight_product_video_plugin_edit_page() {
             if ($updated) {
             // Redirect to the main page after saving
                 echo '<div class="notice notice-success is-dismissible"><p>Video updated successfully!</p></div>';
-                wp_redirect(admin_url('admin.php?page=highlight-product-video-plugin'));
+                wp_redirect(admin_url('admin.php?page=custom-video-plugin'));
                 exit; // Ensure no further code is executed after the redirect
             } else {
                 echo '<div class="notice notice-error is-dismissible"><p>Failed to update the video.</p></div>';
@@ -198,8 +201,15 @@ function highlight_product_video_plugin_edit_page() {
         }
     }
 
+    $default_video_url = 'https://example.com/default-video.mp4';
+    $default_video_url_mbl = 'https://example.com/default-video-mobile.mp4';
+
     $video_url = get_post_meta($video_id, 'video_url', true);
+    $video_url = !empty($video_url) ? $video_url : $default_video_url; // Set default if empty
+
     $video_url_mbl = get_post_meta($video_id, 'video_url_mbl', true);
+    $video_url_mbl = !empty($video_url_mbl) ? $video_url_mbl : $default_video_url_mbl; // Set default if empty
+
     $product_id = get_post_meta($video_id, 'product_id', true);
 
     ?>

@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function highlight_product_video_plugin_shortcode($atts) {
+function highlight_product_video_shortcode($atts) {
     // Set default attributes for the shortcode
     $atts = shortcode_atts(
         [
@@ -15,7 +15,7 @@ function highlight_product_video_plugin_shortcode($atts) {
 
     // Get the video post by ID
     $video_post = get_post($atts['id']);
-    if ($video_post && $video_post->post_type === 'highlight_product_video') {
+    if ($video_post && $video_post->post_type === 'custom_video') {
         // Get the video URL and associated product ID
         $video_url = get_post_meta($video_post->ID, 'video_url', true);
         $video_url_mbl = get_post_meta($video_post->ID, 'video_url_mbl', true);
@@ -26,10 +26,10 @@ function highlight_product_video_plugin_shortcode($atts) {
             // Start output buffering to collect the HTML
             ob_start();
             ?>
-            <div class="highlight-product-video-container">
+            <div class="custom-video-container">
                 <!-- Video Section -->
-                    <video autoplay="autoplay" muted="muted" loop="loop" controlsList="nofullscreen" src="<?php echo esc_url($video_url); ?>" class="highlight-product-video video-desktop"></video>
-                    <video autoplay="autoplay" muted="muted" loop="loop" controlsList="nofullscreen" src="<?php echo esc_url($video_url_mbl); ?>" class="highlight-product-video video-mobile" id="video-mobile"></video>
+                    <video autoplay="autoplay" muted="muted" loop="loop" controlsList="nofullscreen" src="<?php echo esc_url($video_url); ?>" class="custom-video video-desktop"></video>
+                    <video autoplay="autoplay" muted="muted" loop="loop" controlsList="nofullscreen" src="<?php echo esc_url($video_url_mbl); ?>" class="custom-video video-mobile" id="video-mobile"></video>
                     
                     <!-- Product Info Section -->
                     <div class="custom-product-info">
@@ -54,5 +54,5 @@ function highlight_product_video_plugin_shortcode($atts) {
     // Return a message if the video or product is invalid
     return '<p>Invalid video or product.</p>';
 }
-add_shortcode('show_video', 'highlight_product_video_plugin_shortcode');
+add_shortcode('show_video', 'highlight_product_video_shortcode');
 

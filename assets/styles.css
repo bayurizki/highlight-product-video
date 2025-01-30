@@ -1,5 +1,5 @@
 /* General styles for the video container */
-.custom-video-container {
+.highlight-product-video--container {
     position: relative;
     width: 100%;
     height: auto;
@@ -13,7 +13,7 @@
 }
 
 /* Video styling */
-.custom-video {
+.highlight-product-video- {
     width: 100%;
     height: auto;
     object-fit: cover; /* Crop video to fit container */

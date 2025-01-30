@@ -8,7 +8,7 @@ function highlight_product_video_menu() {
         'Highlight Product Video',
         'Highlight Product Video',
         'manage_options',
-        'custom-video-plugin',
+        'highlight-product-video',
         'highlight_product_video_admin_page',
         'dashicons-video-alt3'
     );
@@ -19,7 +19,7 @@ function highlight_product_video_menu() {
         'Edit Video',
         'Edit Video',
         'manage_options',
-        'edit-custom-video',
+        'edit-highlight-product-video-',
         'highlight_product_video_edit_page'
     );
 }
@@ -31,7 +31,7 @@ function highlight_product_video_enqueue_admin_scripts($hook) {
     $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
     // Load scripts only on specific plugin pages
-    if ($current_page === 'custom-video-plugin' || $current_page === 'edit-custom-video') {
+    if ($current_page === 'highlight-product-video' || $current_page === 'edit-highlight-product-video-') {
         wp_enqueue_media();
         wp_enqueue_script('jquery');
 
@@ -52,7 +52,7 @@ function highlight_product_video_enqueue_admin_scripts($hook) {
 
         // Load your custom admin.js script
         wp_enqueue_script(
-            'custom-video-admin-script',
+            'highlight-product-video--admin-script',
             HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/admin.js',
             ['jquery', 'select2'],
             filemtime(HIGHLIGHT_PRODUCT_VIDEO_DIR . 'assets/admin.js'), 
@@ -61,7 +61,7 @@ function highlight_product_video_enqueue_admin_scripts($hook) {
 
         // Load your custom admin.css style
         wp_enqueue_style(
-            'custom-video-admin-style',
+            'highlight-product-video--admin-style',
             HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/admin.css',
             [],
             filemtime(HIGHLIGHT_PRODUCT_VIDEO_DIR . 'assets/admin.css') // Cache busting
@@ -85,7 +85,7 @@ function highlight_product_video_admin_page() {
 
         if ($video_url && $product_id) {
             $video_id = wp_insert_post([
-                'post_type'   => 'custom_video',
+                'post_type'   => 'highlight_video',
                 'post_title'  => 'Video for Product ' . $product_id,
                 'post_status' => 'publish',
                 'meta_input'  => [
@@ -107,13 +107,13 @@ function highlight_product_video_admin_page() {
 
     // Display list of videos with edit and delete buttons
     $args = [
-        'post_type'      => 'custom_video',
+        'post_type'      => 'highlight_video',
         'posts_per_page' => -1,
         'post_status'    => 'publish',
     ];
 
     $video_posts = new WP_Query($args);
-
+    var_dump($video_posts->have_posts());
     ?>
     <div class="wrap">
         <h1>Highlight Product Video</h1>
@@ -145,7 +145,7 @@ function highlight_product_video_admin_page() {
                                 <code>[show_video id="<?php echo get_the_ID(); ?>"]</code>
                             </td>
                             <td>
-                                <a href="<?php echo admin_url('admin.php?page=edit-custom-video&id=' . get_the_ID()); ?>" class="button">Edit</a>
+                                <a href="<?php echo admin_url('admin.php?page=edit-highlight-product-video-&id=' . get_the_ID()); ?>" class="button">Edit</a>
                                 <!-- <a href="<?php echo get_edit_post_link(get_the_ID()); ?>" class="button">Edit</a> -->
                                 <!-- <a href="<?php echo get_delete_post_link(get_the_ID()); ?>" class="button" onclick="return confirm('Are you sure you want to delete this video?');">Delete</a> -->
                             </td>
@@ -168,7 +168,7 @@ function highlight_product_video_edit_page() {
     $video_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     $video_post = get_post($video_id);
 
-    if (!$video_post || $video_post->post_type !== 'custom_video') {
+    if (!$video_post || $video_post->post_type !== 'highlight_video') {
         echo '<div class="notice notice-error"><p>Invalid video ID.</p></div>';
         return;
     }
@@ -177,6 +177,8 @@ function highlight_product_video_edit_page() {
         $video_url = isset($_POST['video_url']) ? esc_url_raw($_POST['video_url']) : '';
         $video_url_mbl = isset($_POST['video_url_mbl']) ? esc_url_raw($_POST['video_url_mbl']) : '';
         $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+        $video_position = isset($_POST['video_position']) ? sanitize_text_field($_POST['video_position']) : 'left';
+        $image_width = isset($_POST['image_width']) ? intval($_POST['image_width']) : 300; // Default width 300
 
         if ($video_url && $product_id) {
             $updated = wp_update_post([
@@ -185,13 +187,15 @@ function highlight_product_video_edit_page() {
                     'video_url' => $video_url,
                     'video_url_mbl' => $video_url_mbl,
                     'product_id' => $product_id,
+                    'video_position' => $video_position,
+                    'image_width' => $image_width,
                 ],
             ]);
 
             if ($updated) {
-            // Redirect to the main page after saving
+                // Redirect to the main page after saving
                 echo '<div class="notice notice-success is-dismissible"><p>Video updated successfully!</p></div>';
-                wp_redirect(admin_url('admin.php?page=custom-video-plugin'));
+                wp_redirect(admin_url('admin.php?page=highlight-product-video'));
                 exit; // Ensure no further code is executed after the redirect
             } else {
                 echo '<div class="notice notice-error is-dismissible"><p>Failed to update the video.</p></div>';
@@ -211,6 +215,11 @@ function highlight_product_video_edit_page() {
     $video_url_mbl = !empty($video_url_mbl) ? $video_url_mbl : $default_video_url_mbl; // Set default if empty
 
     $product_id = get_post_meta($video_id, 'product_id', true);
+    $video_position = get_post_meta($video_id, 'video_position', true);
+    $video_position = $video_position ? $video_position : 'left'; // Default position 'left'
+
+    $image_width = get_post_meta($video_id, 'image_width', true);
+    $image_width = $image_width ? $image_width : 300; // Default width 300
 
     ?>
     <div class="wrap">
@@ -240,6 +249,19 @@ function highlight_product_video_edit_page() {
                 }
                 ?>
             </select>
+            <br><br>
+
+            <!-- Dropdown for product position -->
+            <label for="video_position">Select Video Position:</label>
+            <select name="video_position" id="video_position" required>
+                <option value="left" <?php selected($video_position, 'left'); ?>>Left</option>
+                <option value="right" <?php selected($video_position, 'right'); ?>>Right</option>
+            </select>
+            <br><br>
+
+            <!-- Input field for image width -->
+            <label for="image_width">Product Image Width (px):</label>
+            <input type="number" name="image_width" id="image_width" value="<?php echo esc_attr($image_width); ?>" min="100" max="1000" step="1" required>
             <br><br>
 
             <input type="submit" name="video_update" class="button button-primary" value="Update Video">

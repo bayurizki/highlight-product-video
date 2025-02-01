@@ -23,7 +23,6 @@ function highlight_product_video_enqueue_scripts() {
     wp_enqueue_style('highlight-product-video--admin-style', HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/admin.css', [], '1.0.0');
     wp_enqueue_style('highlight-product-video--style', HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/styles.css', [], '1.11.0');
 
-    wp_enqueue_script('highlight-product-video--script', HIGHLIGHT_PRODUCT_VIDEO_URL . 'assets/script.js', ['jquery'], null, true);
 }
 add_action('wp_enqueue_scripts', 'highlight_product_video_enqueue_scripts');
 

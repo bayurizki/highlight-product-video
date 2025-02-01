@@ -49,7 +49,7 @@
     margin: unset;
 }
 
-.custom-product-price span,
+.custom-product-price,
 .custom-product-name{
     color: #111;
 }

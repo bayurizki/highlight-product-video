@@ -33,13 +33,13 @@ function highlight_product_video_shortcode($atts) {
                     <video autoplay="autoplay" muted="muted" loop="loop" controlsList="nofullscreen" src="<?php echo esc_url($video_url_mbl); ?>" class="highlight-product-video- video-mobile" id="video-mobile"></video>
                     
                     <!-- Product Info Section -->
-                    <div class="custom-product-info <?=$product_position?>">
-                        <a href="<?=get_permalink($product->get_id())?>">
+                    <div class="custom-product-info <?=esc_attr($product_position)?>">
+                        <a href="<?=esc_url(get_permalink($product->get_id()))?>">
 
                         <h3 class="custom-product-name"><?php echo esc_html($product->get_name()); ?></h3>
-                        <p class="custom-product-price"><?php echo wc_price($product->get_price()); ?></p>
-                        <img src="<?php echo wp_get_attachment_image_src( get_post_thumbnail_id( $product->get_id() ), 'single-post-thumbnail' )[0] ?>" 
-                        alt="<?php echo esc_attr($product->get_name()); ?>" class="custom-product-image" style="width: <?=$product_img_widht?>px;">
+                        <p class="custom-product-price"><?php echo wp_kses_post(wc_price($product->get_price())); ?></p>
+                        <img src="<?php echo esc_html(wp_get_attachment_image_src( get_post_thumbnail_id( $product->get_id() ), 'single-post-thumbnail' )[0]) ?>" 
+                        alt="<?php echo esc_attr($product->get_name()); ?>" class="custom-product-image" style="width: <?=esc_attr($product_img_widht)?>px;">
                         </a>
                     </div>
             </div>

@@ -37,7 +37,7 @@ $video_posts = new WP_Query($args);
                         ?>
                     </td>
                     <td>
-                        <code>[show_video id="<?php echo get_the_ID(); ?>"]</code>
+                        <code>[show_video id="<?php echo esc_attr(get_the_ID()); ?>"]</code>
                     </td>
                     <td>
                         <a href="<?php echo admin_url('admin.php?page=edit-custom-video&id=' . get_the_ID()); ?>" class="button">Edit</a>

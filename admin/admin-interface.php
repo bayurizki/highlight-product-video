@@ -75,197 +75,23 @@ function highlight_product_video_admin_page() {
         return;
     }
 
-    $default_video_url = 'https://example.com/default-video.mp4'; // Change this to your actual default video
-    $default_video_url_mbl = 'https://example.com/default-video-mobile.mp4'; // Default mobile video
+    echo '<div class="wrap">';
+    echo '<h1>Highlight Product Video</h1>';
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['video_submit'])) {
-        $video_url = isset($_POST['video_url']) ? esc_url_raw($_POST['video_url']) : '';
-        $video_url_mbl = isset($_POST['video_url_mbl']) ? esc_url_raw($_POST['video_url_mbl']) : '';
-        $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    include plugin_dir_path(__FILE__) . 'admin-video-list.php';
 
-        if ($video_url && $product_id) {
-            $video_id = wp_insert_post([
-                'post_type'   => 'highlight_video',
-                'post_title'  => 'Video for Product ' . $product_id,
-                'post_status' => 'publish',
-                'meta_input'  => [
-                    'video_url'  => $video_url,
-                    'video_url_mbl' => $video_url_mbl,
-                    'product_id' => $product_id,
-                ],
-            ]);
-
-            if ($video_id) {
-                echo '<div class="notice notice-success is-dismissible"><p>Video saved successfully!</p></div>';
-            } else {
-                echo '<div class="notice notice-error is-dismissible"><p>Failed to save the video.</p></div>';
-            }
-        } else {
-            echo '<div class="notice notice-error is-dismissible"><p>All fields are required.</p></div>';
-        }
-    }
-
-    // Display list of videos with edit and delete buttons
-    $args = [
-        'post_type'      => 'highlight_video',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-    ];
-
-    $video_posts = new WP_Query($args);
-    var_dump($video_posts->have_posts());
-    ?>
-    <div class="wrap">
-        <h1>Highlight Product Video</h1>
-
-        <h2>Saved Videos</h2>
-
-        <?php if ($video_posts->have_posts()) : ?>
-            <table class="wp-list-table widefat fixed striped posts">
-                <thead>
-                    <tr>
-                        <th>Video</th>
-                        <th>Product</th>
-                        <th>Shortcode</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($video_posts->have_posts()) : $video_posts->the_post(); ?>
-                        <tr>
-                            <td><?php echo esc_url(get_post_meta(get_the_ID(), 'video_url', true)); ?></td>
-                            <td>
-                                <?php
-                                $product_id = get_post_meta(get_the_ID(), 'product_id', true);
-                                $product = wc_get_product($product_id);
-                                echo $product ? esc_html($product->get_name()) : 'No product associated';
-                                ?>
-                            </td>
-                            <td>
-                                <code>[show_video id="<?php echo get_the_ID(); ?>"]</code>
-                            </td>
-                            <td>
-                                <a href="<?php echo admin_url('admin.php?page=edit-highlight-product-video-&id=' . get_the_ID()); ?>" class="button">Edit</a>
-                                <!-- <a href="<?php echo get_edit_post_link(get_the_ID()); ?>" class="button">Edit</a> -->
-                                <!-- <a href="<?php echo get_delete_post_link(get_the_ID()); ?>" class="button" onclick="return confirm('Are you sure you want to delete this video?');">Delete</a> -->
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        <?php else : ?>
-            <p>No videos saved yet.</p>
-        <?php endif; ?>
-    </div>
-    <?php
+    echo '</div>';
 }
+
 
 function highlight_product_video_edit_page() {
     if (!current_user_can('manage_options')) {
         return;
     }
 
-    $video_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $video_post = get_post($video_id);
+    echo '<div class="wrap">';
+    
+    include plugin_dir_path(__FILE__) . 'admin-video-edit.php';
 
-    if (!$video_post || $video_post->post_type !== 'highlight_video') {
-        echo '<div class="notice notice-error"><p>Invalid video ID.</p></div>';
-        return;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['video_update'])) {
-        $video_url = isset($_POST['video_url']) ? esc_url_raw($_POST['video_url']) : '';
-        $video_url_mbl = isset($_POST['video_url_mbl']) ? esc_url_raw($_POST['video_url_mbl']) : '';
-        $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
-        $video_position = isset($_POST['video_position']) ? sanitize_text_field($_POST['video_position']) : 'left';
-        $image_width = isset($_POST['image_width']) ? intval($_POST['image_width']) : 300; // Default width 300
-
-        if ($video_url && $product_id) {
-            $updated = wp_update_post([
-                'ID' => $video_id,
-                'meta_input' => [
-                    'video_url' => $video_url,
-                    'video_url_mbl' => $video_url_mbl,
-                    'product_id' => $product_id,
-                    'video_position' => $video_position,
-                    'image_width' => $image_width,
-                ],
-            ]);
-
-            if ($updated) {
-                // Redirect to the main page after saving
-                echo '<div class="notice notice-success is-dismissible"><p>Video updated successfully!</p></div>';
-                wp_redirect(admin_url('admin.php?page=highlight-product-video'));
-                exit; // Ensure no further code is executed after the redirect
-            } else {
-                echo '<div class="notice notice-error is-dismissible"><p>Failed to update the video.</p></div>';
-            }
-        } else {
-            echo '<div class="notice notice-error is-dismissible"><p>All fields are required.</p></div>';
-        }
-    }
-
-    $default_video_url = 'https://example.com/default-video.mp4';
-    $default_video_url_mbl = 'https://example.com/default-video-mobile.mp4';
-
-    $video_url = get_post_meta($video_id, 'video_url', true);
-    $video_url = !empty($video_url) ? $video_url : $default_video_url; // Set default if empty
-
-    $video_url_mbl = get_post_meta($video_id, 'video_url_mbl', true);
-    $video_url_mbl = !empty($video_url_mbl) ? $video_url_mbl : $default_video_url_mbl; // Set default if empty
-
-    $product_id = get_post_meta($video_id, 'product_id', true);
-    $video_position = get_post_meta($video_id, 'video_position', true);
-    $video_position = $video_position ? $video_position : 'left'; // Default position 'left'
-
-    $image_width = get_post_meta($video_id, 'image_width', true);
-    $image_width = $image_width ? $image_width : 300; // Default width 300
-
-    ?>
-    <div class="wrap">
-        <h1>Edit Video</h1>
-
-        <form method="post">
-            <label for="video_url">Select Video:</label>
-            <input type="hidden" name="video_url" id="video_url" value="<?php echo esc_url($video_url); ?>" required>
-            <button type="button" id="select-video" class="button">Select Video</button>
-            <div id="selected-video-preview"><?php echo esc_url($video_url); ?></div>
-            <br><br>
-
-            <label for="video_url_mbl">Select Video for Mobile:</label>
-            <input type="hidden" name="video_url_mbl" id="video_url_mbl" value="<?php echo esc_url($video_url_mbl); ?>" required>
-            <button type="button" id="select-video-mbl" class="button">Select Video Mobile</button>
-            <div id="selected-video-preview_mbl"><?php echo esc_url($video_url_mbl); ?></div>
-            <br><br>
-
-            <label for="product_id">Select Product:</label>
-            <select name="product_id" id="product_id" style="width: 100%;" required>
-                <option value="">Select a product</option>
-                <?php
-                $products = wc_get_products(['limit' => -1]);
-                foreach ($products as $product) {
-                    $selected = selected($product->get_id(), $product_id, false);
-                    echo '<option value="' . esc_attr($product->get_id()) . '" ' . $selected . '>' . esc_html($product->get_name()) . '</option>';
-                }
-                ?>
-            </select>
-            <br><br>
-
-            <!-- Dropdown for product position -->
-            <label for="video_position">Select Video Position:</label>
-            <select name="video_position" id="video_position" required>
-                <option value="left" <?php selected($video_position, 'left'); ?>>Left</option>
-                <option value="right" <?php selected($video_position, 'right'); ?>>Right</option>
-            </select>
-            <br><br>
-
-            <!-- Input field for image width -->
-            <label for="image_width">Product Image Width (px):</label>
-            <input type="number" name="image_width" id="image_width" value="<?php echo esc_attr($image_width); ?>" min="100" max="1000" step="1" required>
-            <br><br>
-
-            <input type="submit" name="video_update" class="button button-primary" value="Update Video">
-        </form>
-    </div>
-    <?php
+    echo '</div>';
 }

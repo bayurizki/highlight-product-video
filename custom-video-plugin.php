@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Highlight Product Video
- * Description: A plugin to display videos with associated products using shortcodes.
+ * Description: A plugin to display videos with associated woocommerce product using shortcodes.
  * Version: 1.0
- * Author: BY
+ * Author: Dibara team
  */
 
 if (!defined('ABSPATH')) {
@@ -52,8 +52,8 @@ function highlight_product_video_activate() {
     }
 
     // Upload the default video to the media library
-    $video_url = highlight_product_video_upload_default_video('assets/default-video.mp4');
-    $video_url_mbl = highlight_product_video_upload_default_video('assets/default-video-mobile.mp4');
+    $video_url ='https://bdd.services/content/default.mp4';
+    $video_url_mbl = 'https://bdd.services/content/default-mobile.mp4';
 
     // $video_url = 'test';
     // $video_url_mbl = 'test';
@@ -82,62 +82,6 @@ function highlight_product_video_activate() {
 
 // Hook into plugin activation
 register_activation_hook(__FILE__, 'highlight_product_video_activate');
-
-/**
- * Uploads a default video to the WordPress media library.
- */
-function highlight_product_video_upload_default_video($relative_path) {
-    // Construct the absolute path using the directory constant
-    $file_path = HIGHLIGHT_PRODUCT_VIDEO_DIR . $relative_path;
-
-    // Check if the file exists at the specified path
-    if (!file_exists($file_path)) {
-        return false; // Return false if the file does not exist
-    }
-
-    $file_name = basename($file_path); // Get the file name from the path
-    $file_type = wp_check_filetype($file_name, null); // Check the file type
-
-    // Read the file contents
-    $file_content = file_get_contents($file_path);
-
-    if (!$file_content) {
-        return false; // Return false if the file contents cannot be read
-    }
-
-    // Upload the file using wp_upload_bits() and check for errors
-    $upload = wp_upload_bits($file_name, null, $file_content);
-
-    // Check if there was an error during the upload
-    if ($upload['error']) {
-        return false; // Return false if there was an error
-    }
-
-    // Prepare the attachment array to insert into the media library
-    $attachment = [
-        'guid'           => $upload['url'], // URL of the uploaded file
-        'post_mime_type' => $file_type['type'], // Mime type
-        'post_title'     => sanitize_file_name($file_name), // Clean the file name for title
-        'post_content'   => '', // No content
-        'post_status'    => 'inherit', // Set the status to 'inherit' to associate with media
-    ];
-
-    // Insert the attachment into the media library
-    $attach_id = wp_insert_attachment($attachment, $upload['file']);
-
-    if (!$attach_id) {
-        return false; // Return false if the attachment insertion failed
-    }
-
-    // Include image functions to generate the metadata
-    require_once ABSPATH . 'wp-admin/includes/image.php';
-
-    // Update the attachment metadata
-    wp_update_attachment_metadata($attach_id, wp_generate_attachment_metadata($attach_id, $upload['file']));
-
-    return $upload['url']; // Return the URL of the uploaded file
-}
-
 
 
 if (!defined('ABSPATH')) {

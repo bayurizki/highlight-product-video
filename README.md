@@ -1,4 +1,4 @@
-# Custom Video Plugin for WordPress 🎥
+# Custom Video Plugin for Woocommerce 🎥
 
 A WordPress plugin that creates customized video sections with highlighted products. This plugin allows you to easily showcase your products alongside relevant video content using shortcodes.
 
@@ -16,6 +16,7 @@ Custom Video Plugin enables you to create engaging video presentations with asso
 - File preview functionality
 
 ## 🔧 Installation
+**Make sure you have woocommerce plugin installed**
 
 1. Download the plugin zip file
 2. Go to WordPress admin panel → Plugins → Add New
@@ -37,7 +38,7 @@ Replace `1` with the ID of the video you want to display.
 
 ## Preview
 
-![Demo](https://raw.githubusercontent.com/bayurizki/highlight-product-video/main/preview.gif)
+![Demo](https://raw.githubusercontent.com/bayurizki/highlight-product-video/main/preview-plugin.gif)
 
 ## ☕ Buy Me a Coffee
 😃😃😃😃  

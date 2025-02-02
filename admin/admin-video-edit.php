@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 $video_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $video_post = get_post($video_id);
 
-if (!$video_post || $video_post->post_type !== 'custom_video') {
+if (!$video_post || $video_post->post_type !== 'highlight_video') {
     echo '<div class="notice notice-error"><p>Invalid video ID.</p></div>';
     return;
 }
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['video_update'])) {
 
         if ($updated) {
             echo '<div class="notice notice-success is-dismissible"><p>Video updated successfully!</p></div>';
-            wp_redirect(admin_url('admin.php?page=custom-video-plugin'));
+            wp_redirect(admin_url('admin.php?page=highlight-product-video'));
             exit;
         } else {
             echo '<div class="notice notice-error is-dismissible"><p>Failed to update the video.</p></div>';

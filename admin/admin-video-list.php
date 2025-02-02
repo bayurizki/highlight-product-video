@@ -2,10 +2,9 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
 // Query all saved videos
 $args = [
-    'post_type'      => 'custom_video',
+    'post_type'      => 'highlight_video',
     'posts_per_page' => -1,
     'post_status'    => 'publish',
 ];
@@ -40,7 +39,7 @@ $video_posts = new WP_Query($args);
                         <code>[show_video id="<?php echo esc_attr(get_the_ID()); ?>"]</code>
                     </td>
                     <td>
-                        <a href="<?php echo admin_url('admin.php?page=edit-custom-video&id=' . get_the_ID()); ?>" class="button">Edit</a>
+                        <a href="<?php echo admin_url('admin.php?page=edit-highlight-product-video-&id=' . get_the_ID()); ?>" class="button">Edit</a>
                     </td>
                 </tr>
             <?php endwhile; ?>

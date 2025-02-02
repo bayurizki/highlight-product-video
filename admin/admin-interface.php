@@ -78,6 +78,12 @@ function highlight_product_video_admin_page() {
     echo '<div class="wrap">';
     echo '<h1>Highlight Product Video</h1>';
 
+    // Add a button to generate the default video record
+    echo '<form method="post" action="">';
+    wp_nonce_field('generate_default_video', 'generate_default_video_nonce');
+    echo '<input type="submit" name="generate_default_video" class="button button-primary" value="Generate Default Video">';
+    echo '</form>';
+
     include plugin_dir_path(__FILE__) . 'admin-video-list.php';
 
     echo '</div>';
@@ -88,7 +94,7 @@ function highlight_product_video_edit_page() {
     if (!current_user_can('manage_options')) {
         return;
     }
-
+    
     echo '<div class="wrap">';
     
     include plugin_dir_path(__FILE__) . 'admin-video-edit.php';

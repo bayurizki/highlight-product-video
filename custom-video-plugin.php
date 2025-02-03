@@ -3,7 +3,9 @@
  * Plugin Name: Highlight Product Video
  * Description: A plugin to display videos with associated woocommerce product using shortcodes.
  * Version: 1.0
- * Author: Dibara team
+ * Author: bayurizki / BYWP
+ * License: GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (!defined('ABSPATH')) {
@@ -67,6 +69,7 @@ function highlight_product_video_activate() {
     if (!$existing_videos->have_posts() && $video_url) {
         wp_insert_post([
             'post_type'   => 'highlight_video',
+            'posts_per_page' => 10,
             'post_title'  => 'Default Video',
             'post_status' => 'publish',
             'meta_input'  => [

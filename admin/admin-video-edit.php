@@ -12,17 +12,17 @@ if (!$video_post || $video_post->post_type !== 'highlight_video') {
 }
 
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['video_update'])) {
-    $video_url = isset($_POST['video_url']) ? esc_url_raw($_POST['video_url']) : '';
-    $video_url_mbl = isset($_POST['video_url_mbl']) ? esc_url_raw($_POST['video_url_mbl']) : '';
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['video_update'])) {
+    $video_url = isset($_POST['video_url']) ? esc_url_raw(wp_unslash($_POST['video_url'])) : '';
+    $video_url_mbl = isset($_POST['video_url_mbl']) ? esc_url_raw(wp_unslash($_POST['video_url_mbl'])) : '';
     $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
 
     if ($video_url && $product_id) {
         $updated = wp_update_post([
             'ID' => $video_id,
             'meta_input' => [
-                'video_url' => $video_url,
-                'video_url_mbl' => $video_url_mbl,
+                'video_url' => wp_unslash($video_url),
+                'video_url_mbl' => wp_unslash($video_url_mbl),
                 'product_id' => $product_id,
             ],
         ]);
@@ -66,7 +66,7 @@ $product_id = get_post_meta($video_id, 'product_id', true);
         $products = wc_get_products(['limit' => -1]);
         foreach ($products as $product) {
             $selected = selected($product->get_id(), $product_id, false);
-            echo '<option value="' . esc_attr($product->get_id()) . '" ' . $selected . '>' . esc_html($product->get_name()) . '</option>';
+            echo '<option value="' . esc_attr($product->get_id()) . '" ' . esc_attr($selected) . '>' . esc_html($product->get_name()) . '</option>';
         }
         ?>
     </select>
